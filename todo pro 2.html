@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Todo List</title>
+
+    <style>
+        body {
+            background: #e9edf3;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container {
+            width: 420px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #369841;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f4f4f4;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .btn-small {
+            padding: 5px 8px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+
+        .edit-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .delete-btn {
+            background: red;
+            color: white;
+        }
+
+        .complete-btn {
+            background: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Todo List App</h2>
+
+        <input type="text" id="taskInput" placeholder="Enter task...">
+        <button onclick="addTask()">Add Task</button>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function addTask() {
+            const text = document.getElementById("taskInput").value.trim();
+            if (!text) return alert("Please enter a task!");
+
+            tasks.push({
+                id: Date.now(),
+                text: text,
+                completed: false
+            });
+
+            document.getElementById("taskInput").value = "";
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+        }
+
+        function editTask(id) {
+            const newText = prompt("Edit task name:");
+            if (!newText) return;
+            
+            tasks = tasks.map(t => 
+                t.id === id ? { ...t, text: newText } : t
+            );
+            renderTasks();
+        }
+
+        function toggleComplete(id) {
+            tasks = tasks.map(t =>
+                t.id === id ? { ...t, completed: !t.completed } : t
+            );
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById("taskList");
+            list.innerHTML = "";
+
+            tasks.forEach(task => {
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    <span class="${task.completed ? "completed" : ""}">${task.text}</span>
+                    <div>
+                        <button class="btn-small complete-btn" onclick="toggleComplete(${task.id})">✔</button>
+                        <button class="btn-small edit-btn" onclick="editTask(${task.id})">✎</button>
+                        <button class="btn-small delete-btn" onclick="deleteTask(${task.id})">🗑</button>
+                    </div>
+                `;
+
+                list.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>
